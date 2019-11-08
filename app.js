@@ -3,16 +3,20 @@ const square = [
     ["FFEB3B", "FFC107", "FFC107", "FFEB3B"],
     ["FFEB3B", "FFC107", "FFC107", "FFEB3B"],
 	["00BCD4", "FFEB3B", "FFEB3B", "00BCD4"]];
+const squareSize = 4,
+	  bigSquareSize = 32,
+ 	  imageSize = 512;
 function drawing(size) {
-    const field = document.querySelector('canvas'),
+	const field = document.querySelector('canvas'),
+		  maxFieldSize = 512,
 		  ctx = field.getContext('2d'),
-		  scale = Math.round(512 / size);
+		  scale = Math.round(maxFieldSize / size);
 		  field.width = 512;
 		  field.height = 512;
 	let blockWidth = 0,
 		blockHeight = 0;
 	switch(size) {
-		case 4:
+		case squareSize:
 			blockWidth = square[0].length,
 			blockHeight = square.length;
         	for (let row = 0; row < blockWidth; row++) {
@@ -22,7 +26,7 @@ function drawing(size) {
             	}
         	}
 		break;
-    	case 32:
+    	case bigSquareSize:
 			blockWidth = bigSquare[0].length,
 			blockHeight = bigSquare.length;
 			for (let row = 0; row < blockWidth; row++) {
@@ -32,7 +36,7 @@ function drawing(size) {
 				}
 			}
 		break;
-    	case 512:
+    	case imageSize:
 			const img = new Image();
 			img.onload = function() {
 				ctx.drawImage(img, 0, 0, field.width = 512, field.height = 512);
@@ -43,30 +47,26 @@ function drawing(size) {
 }
 const sizeSwitcher = document.querySelectorAll('.switcher__size');
 const checkbox = document.querySelectorAll('.switcher__size_checkbox');
-sizeSwitcher[0].addEventListener('click', function() {
-    sizeSwitcher[0].classList.add('current-size');
-    sizeSwitcher[1].classList.remove('current-size');
-    sizeSwitcher[2].classList.remove('current-size');
-    checkbox[0].classList.add("current-size__checkbox");
-    checkbox[1].classList.remove("current-size__checkbox");
-    checkbox[2].classList.remove("current-size__checkbox");
-    drawing(4);
-});
-sizeSwitcher[1].addEventListener('click', function() {
-    sizeSwitcher[0].classList.remove('current-size');
-    sizeSwitcher[1].classList.add('current-size');
-    sizeSwitcher[2].classList.remove('current-size');
-    checkbox[0].classList.remove('current-size__checkbox');
-    checkbox[1].classList.add('current-size__checkbox');
-    checkbox[2].classList.remove('current-size__checkbox');
-    drawing(32);
-});
-sizeSwitcher[2].addEventListener('click', function() {
-    sizeSwitcher[0].classList.remove('current-size');
-    sizeSwitcher[1].classList.remove('current-size');
-    sizeSwitcher[2].classList.add('current-size');
-    checkbox[0].classList.remove('current-size__checkbox');
-    checkbox[1].classList.remove('current-size__checkbox');
-    checkbox[2].classList.add('current-size__checkbox');
-    drawing(512);
-});
+for (let i = 0; i < sizeSwitcher.length; i++) {
+	sizeSwitcher[i].addEventListener('click', function() {
+		for (let j = 0; j < sizeSwitcher.length; j++) {
+			sizeSwitcher[j].className = 'switcher__size';
+			checkbox[j].className = 'switcher__size_checkbox';
+		}
+		if (sizeSwitcher[i].innerText === '4x4') {
+			sizeSwitcher[i].classList.add('current-size');
+			checkbox[i].classList.add('current-size__checkbox');
+			drawing(squareSize);
+		}
+		if (sizeSwitcher[i].innerText === '32x32') {
+			sizeSwitcher[i].classList.add('current-size');
+			checkbox[i].classList.add('current-size__checkbox');
+			drawing(bigSquareSize);
+		}
+		if (sizeSwitcher[i].innerText === '512x512') {
+			sizeSwitcher[i].classList.add('current-size');
+			checkbox[i].classList.add('current-size__checkbox');
+			drawing(imageSize);
+		}
+	});
+}
